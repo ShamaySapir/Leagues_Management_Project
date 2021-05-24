@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/ShamaySapir/Leagues_Management_Project/issues"
   },
-  "homepage": "https://github.com/ShamaySapir/Leagues_Management_Project#readme"
+  "homepage": "https://github.com/ShamaySapir/Leagues_Management_Project#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "twilio": "^3.63.0"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
 }
