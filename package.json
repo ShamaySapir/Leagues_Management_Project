@@ -1,0 +1,19 @@
+{
+  "name": "leagues_managment_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShamaySapir/Leagues_Management_Project.git"
+  },
+  "author": "sapir shamay shamay.sapir@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShamaySapir/Leagues_Management_Project/issues"
+  },
+  "homepage": "https://github.com/ShamaySapir/Leagues_Management_Project#readme"
+}
