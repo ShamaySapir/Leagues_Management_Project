@@ -12,6 +12,15 @@ var logger = require("morgan");
 var cors = require("cors");
 var app = express();
 
+Object.size = function(obj) {
+    var size = 0,
+        key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
 app.use(

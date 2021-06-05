@@ -23,3 +23,4 @@ router.post("/Login", async(req, res, next) => { //check if login is post reques
         next(error);
     }
 });
+module.exports = router;
