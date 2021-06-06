@@ -4,7 +4,6 @@ var router = express.Router();
 // const DButils = require("./utils/DButils");
 const unionRep_domain = require("../../domainLayer/unionRep_domain");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-const unionRep_domain = require("../../domainLayer/unionRep_domain");
 
 //check if user is unionRep
 
@@ -30,20 +29,17 @@ router.post("/createMatches", async(req, res, next) => {
         },
     });
 
-    if (!leagues.data.data.contains(req.body.leagueId) ||
-        Object.size(leagues) == 0
-    ) {
-        res.status(404).send("league not found");
-    }
-
     if (!leagues.data.data.some(e => e.id == req.body.leagueId) || Object.size(leagues) == 0) {
         res.status(404).send("league not found")
     }
 
-
-    if (!seasons.data.data.some(e => { e.id == req.body.seasonId && e.leage_id == req.body.leagueId }) || Object.size(leagues) == 0) {
-        res.status(404).send("season not found")
+    if (!seasons.data.data.some(e => e.id == req.body.seasonId && e.league_id == req.body.leagueId) || Object.size(seasons) == 0) {
+        res.status(404).send("league not found")
     }
+
+    // if (!seasons.data.data.some(e => { e.id == req.body.seasonId && e.league_id == req.body.leagueId }) || Object.size(leagues) == 0) {
+    //     res.status(404).send("season not found")
+    // }
 
 
     // if (!seasons.data.data.some(e => e.leage_id == req.body.leagueId))
