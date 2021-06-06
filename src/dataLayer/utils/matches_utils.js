@@ -13,5 +13,13 @@ async function getTableSize() {
     return table_size;
 }
 
+async function addMatchesToDB(data) {
+    //TODO: implement the function
+    if (!data) {
+        throw { status: 404, message: "problem" };
+    }
+}
+
 
 exports.getTableSize = getTableSize;
+exports.addMatchesToDB = addMatchesToDB;

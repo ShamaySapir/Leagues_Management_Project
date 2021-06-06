@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { NText } = require("mssql");
 const matches_utils = require("../dataLayer/utils/matches_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
@@ -53,7 +54,27 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
         }
     }
 
-    //TODO: add matches to DB
+    //add matches to DB
+
+    let wrote_to_DB = await writeToDB(matches, 'matches');
+    if (!wrote_to_DB) {
+        throw { message: "failed to write matches to DB" };
+    }
+
+};
+
+
+async function writeToDB(data, table_name) {
+    try {
+        if (table_name == 'matches') {
+            let add_matches = await matches_utils.addMatchesToDB(data)
+            if (!add_matches) {
+                throw { message: "cannot write matches to DB" };
+            }
+        }
+
+    } catch (error) { console.log(error) }
+
 
 }
 
