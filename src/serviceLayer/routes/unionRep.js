@@ -1,7 +1,9 @@
 var express = require("express");
+const axios = require("axios");
 var router = express.Router();
 // const DButils = require("./utils/DButils");
-const unionRep_domain = require("./domainLayer/unionRep_domain");
+const path = require('path');
+const unionRep_domain = require(path.join(process.cwd(), "./src/domainLayer/unionRep_domain"));
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 //check if user is unionRep
@@ -15,7 +17,7 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 // });
 
 
-router.post("/CreateMatches", async(req, res, next) => {
+router.post("/createMatches", async(req, res, next) => {
     const leagues = await axios.get(`${api_domain}/leagues`, {
         params: {
             // include: "squad",
@@ -44,7 +46,7 @@ router.post("/CreateMatches", async(req, res, next) => {
     if (req.body.policy == 1) {
 
         try {
-            firstPolicy = await unionRep_domain.();
+            firstPolicy = await unionRep_domain.scheduleByFirstPolicy(req.body.leagueId, req.body.seasonId);
             res.send();
 
         } catch (error) {
@@ -52,7 +54,7 @@ router.post("/CreateMatches", async(req, res, next) => {
         }
     } else if (req.body.policy == 2) {
         try {
-            secondPolicy = await unionRep_domain.();
+            secondPolicy = await unionRep_domain.scheduleBySecondPolicy(req.body.leagueId, req.body.seasonId);
             res.send();
 
         } catch (error) {

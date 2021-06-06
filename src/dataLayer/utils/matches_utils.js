@@ -14,5 +14,4 @@ async function getTableSize() {
 }
 
 
-
 exports.getTableSize = getTableSize;

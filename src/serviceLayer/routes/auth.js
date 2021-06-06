@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
-const DButils = require("./dataLayer/utils/DButils");
+const path = require('path');
+const DButils = require(path.join(process.cwd(), "./src/dataLayer/utils/DButils"));
 const bcrypt = require("bcryptjs");
 
 

@@ -1,5 +1,6 @@
 const axios = require("axios");
-const matches_utils = require("./dataLayer/utils/matches_utils");
+const path = require('path');
+const matches_utils = require(path.join(process.cwd(), "./src/dataLayer/utils/matches_utils"));
 
 
 //policy == 1 : schedule matches so every two teams in the leage play together once
@@ -10,34 +11,34 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
             api_token: process.env.api_token,
         },
     });
+    teams = getTeamsByLeagueId(teams, leagueId);
 
     let season = await axios.get(`${api_domain}/seasons/${seasonId}`, {
         params: {
             api_token: process.env.api_token,
         },
     });
-    teams = getTeamsByLeagueId(teams, leagueId);
 
     let matches = [];
     //TODO: check how the teams look like 
-    let season = season.data.data.name;
-    let year = season.split('/');
+    let season_name = season.data.data.name;
+    let year = season_name.split('/');
     var date = year + "-01-01";
 
     for (let index = 0; index < Object.size(teams); index++) {
         for (let j = index + 1; j < Object.size(teams); j++) {
             let match = {
-                matchId = getcurrentMatchId(),
-                leagueId = leagueId,
-                seasonId = seasonId,
-                stageId = getStageBySeasonId(seasonId),
-                matchDate = date,
-                matchHour = "20:00:00",
-                homeTeam = teams.data.data[index],
-                awayTeam = teams.data.data[j],
-                stadium = getStadium(homeTeam),
-                refereeId = null,
-                score = null,
+                matchId: getcurrentMatchId(),
+                leagueId: leagueId,
+                seasonId: seasonId,
+                stageId: getStageBySeasonId(seasonId),
+                matchDate: date,
+                matchHour: "20:00:00",
+                homeTeam: teams.data.data[index],
+                awayTeam: teams.data.data[j],
+                stadium: getStadium(homeTeam),
+                refereeId: null,
+                score: null,
             };
 
             matches.push(match);

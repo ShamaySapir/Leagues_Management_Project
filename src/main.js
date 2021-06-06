@@ -1,5 +1,5 @@
 //#region global imports
-const DButils = require("./dataLayer/utils/DButils");
+const DButils = require("./dataLayer/utils/DButils.js");
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
