@@ -107,8 +107,10 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
 
   for (let index = 0; index < teams.data.data.length; index++) {
     for (let j = index + 1; j < teams.data.data.length; j++) {
-      let stage_id = await getStageBySeasonId(seasonId);
-      let stadium = await getStadium(teams.data.data[index].id);
+      //   let stage_id = await getStageBySeasonId(seasonId);
+      let stage_id = 2020;
+      //   let stadium = await getStadium(teams.data.data[index].id);
+      let stadium = "bloomfield";
       let match = {
         matchId: match_id + 1,
         leagueId: leagueId,
@@ -128,17 +130,27 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
       match_id++;
     }
   }
-  secondRoundMatches = [...firstRoundMatches];
+  //   secondRoundMatches = [...firstRoundMatches];
+  var secondRoundMatches = JSON.parse(JSON.stringify(firstRoundMatches));
   //switch between homeTeam and awayTeam fot the second round
   secondRoundMatches.forEach((match) => {
+    //new parameters
+    match_id++;
+    date = addDays(date, 7);
     let former_homeTeam = match.homeTeam;
     let former_awayTeam = match.awayTeam;
+
+    //update
+    match.matchId = match_id;
     match.homeTeam = former_awayTeam;
     match.awayTeam = former_homeTeam;
+    // match.stadium = getStadium(former_awayTeam.id);
+    match.stadium = "second stadium";
+    match.date = date;
   });
 
   allMatches = firstRoundMatches.concat(secondRoundMatches);
-  console.log(allMatches);
+  return allMatches;
 
   //TODO: add matches to DB
 }

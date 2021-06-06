@@ -65,7 +65,7 @@ router.post("/createMatches", async (req, res, next) => {
         req.body.leagueId,
         req.body.seasonId
       );
-      res.status(200).send("League matches created successfully");
+      res.status(200).send(secondPolicy);
     } catch (error) {
       next(error);
     }
