@@ -45,39 +45,33 @@ router.post("/createMatches", async (req, res, next) => {
     res.status(404).send("league not found");
   }
 
-  // if (!seasons.data.data.some(e => { e.id == req.body.seasonId && e.league_id == req.body.leagueId }) || Object.size(leagues) == 0) {
-  //     res.status(404).send("season not found")
-  // }
-
-  // if (!seasons.data.data.some(e => e.leage_id == req.body.leagueId))
-
-  // if (!seasons.data.data.some(e => e.id == req.body.seasonId) || !seasons.data.data.some(e => e.leage_id == req.body.leagueId) || Object.size(leagues) == 0) {
-  //     res.status(404).send("season not found")
-  // }
-
-  if (req.body.policy == "undefined") {
-    req.body.policy == 1;
-  }
-
-  if (req.body.policy == 1) {
-    try {
-      firstPolicy = await unionRep_domain.scheduleByFirstPolicy(
-        req.body.leagueId,
-        req.body.seasonId
-      );
-      res.send();
-    } catch (error) {
-      next(error);
+    if (req.body.policy == 'undefined') {
+        req.body.policy == 1;
     }
-  } else if (req.body.policy == 2) {
-    try {
-      secondPolicy = await unionRep_domain.scheduleBySecondPolicy(
-        req.body.leagueId,
-        req.body.seasonId
-      );
-      res.send();
-    } catch (error) {
-      next(error);
+
+    if (req.body.policy == 1) {
+        try {
+            let firstPolicy = await unionRep_domain.scheduleByFirstPolicy(
+                req.body.leagueId,
+                req.body.seasonId
+            );
+            res.status(200).send("League matches created successfully");
+        } catch (error) {
+            next(error);
+        }
+
+    } else if (req.body.policy == 2) {
+        try {
+            secondPolicy = await unionRep_domain.scheduleBySecondPolicy(
+                req.body.leagueId,
+                req.body.seasonId
+            );
+            res.status(200).send("League matches created successfully");
+        } catch (error) {
+            next(error);
+        }
+    } else {
+        res.status(400).send("Wrong input parameters");
     }
   } else {
     res.status(400).send("Wrong input parameters");
