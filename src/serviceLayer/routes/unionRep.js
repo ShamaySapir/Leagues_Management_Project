@@ -45,33 +45,29 @@ router.post("/createMatches", async (req, res, next) => {
     res.status(404).send("league not found");
   }
 
-    if (req.body.policy == 'undefined') {
-        req.body.policy == 1;
+  if (req.body.policy == "undefined") {
+    req.body.policy == 1;
+  }
+
+  if (req.body.policy == 1) {
+    try {
+      let firstPolicy = await unionRep_domain.scheduleByFirstPolicy(
+        req.body.leagueId,
+        req.body.seasonId
+      );
+      res.status(200).send("League matches created successfully");
+    } catch (error) {
+      next(error);
     }
-
-    if (req.body.policy == 1) {
-        try {
-            let firstPolicy = await unionRep_domain.scheduleByFirstPolicy(
-                req.body.leagueId,
-                req.body.seasonId
-            );
-            res.status(200).send("League matches created successfully");
-        } catch (error) {
-            next(error);
-        }
-
-    } else if (req.body.policy == 2) {
-        try {
-            secondPolicy = await unionRep_domain.scheduleBySecondPolicy(
-                req.body.leagueId,
-                req.body.seasonId
-            );
-            res.status(200).send("League matches created successfully");
-        } catch (error) {
-            next(error);
-        }
-    } else {
-        res.status(400).send("Wrong input parameters");
+  } else if (req.body.policy == 2) {
+    try {
+      secondPolicy = await unionRep_domain.scheduleBySecondPolicy(
+        req.body.leagueId,
+        req.body.seasonId
+      );
+      res.status(200).send("League matches created successfully");
+    } catch (error) {
+      next(error);
     }
   } else {
     res.status(400).send("Wrong input parameters");
