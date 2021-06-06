@@ -2,9 +2,10 @@ var express = require("express");
 const axios = require("axios");
 var router = express.Router();
 // const DButils = require("./utils/DButils");
-const path = require('path');
-const unionRep_domain = require(path.join(process.cwd(), "./src/domainLayer/unionRep_domain"));
+const path = require("path");
+// const unionRep_domain = require(path.join(process.cwd(), "./src/domainLayer/unionRep_domain"));
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
+const unionRep_domain = require("../../domainLayer/unionRep_domain");
 
 //check if user is unionRep
 
@@ -16,54 +17,61 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 //     } catch (error) { next(error) }
 // });
 
+router.post("/createMatches", async (req, res, next) => {
+  const leagues = await axios.get(`${api_domain}/leagues`, {
+    params: {
+      // include: "squad",
+      api_token: process.env.api_token,
+    },
+  });
 
-router.post("/createMatches", async(req, res, next) => {
-    const leagues = await axios.get(`${api_domain}/leagues`, {
-        params: {
-            // include: "squad",
-            api_token: process.env.api_token,
-        },
-    });
+  const seasons = await axios.get(`${api_domain}/seasons`, {
+    params: {
+      api_token: process.env.api_token,
+    },
+  });
 
-    const seasons = await axios.get(`${api_domain}/seasons`, {
-        params: {
-            api_token: process.env.api_token,
-        },
-    });
+  if (
+    !leagues.data.data.contains(req.body.leagueId) ||
+    Object.size(leagues) == 0
+  ) {
+    res.status(404).send("league not found");
+  }
 
-    if (!leagues.data.data.contains(req.body.leagueId) || Object.size(leagues) == 0) {
-        res.status(404).send("league not found")
+  if (
+    !seasons.data.data.contains(req.body.seasonId) ||
+    !seasons.data.data.leagueId == req.body.leagueId ||
+    Object.size(leagues) == 0
+  ) {
+    res.status(404).send("season not found");
+  }
+
+  if (req.body.policy == "undefined") {
+    req.body.policy == 1;
+  }
+
+  if (req.body.policy == 1) {
+    try {
+      firstPolicy = await unionRep_domain.scheduleByFirstPolicy(
+        req.body.leagueId,
+        req.body.seasonId
+      );
+      res.send();
+    } catch (error) {
+      next(error);
     }
-
-    if (!seasons.data.data.contains(req.body.seasonId) || !seasons.data.data.leagueId == req.body.leagueId || Object.size(leagues) == 0) {
-        res.status(404).send("season not found")
+  } else if (req.body.policy == 2) {
+    try {
+      secondPolicy = await unionRep_domain.scheduleBySecondPolicy(
+        req.body.leagueId,
+        req.body.seasonId
+      );
+      res.send();
+    } catch (error) {
+      next(error);
     }
-
-    if (req.body.policy == 'undefined') {
-        req.body.policy == 1;
-    }
-
-    if (req.body.policy == 1) {
-
-        try {
-            firstPolicy = await unionRep_domain.scheduleByFirstPolicy(req.body.leagueId, req.body.seasonId);
-            res.send();
-
-        } catch (error) {
-            next(error);
-        }
-    } else if (req.body.policy == 2) {
-        try {
-            secondPolicy = await unionRep_domain.scheduleBySecondPolicy(req.body.leagueId, req.body.seasonId);
-            res.send();
-
-        } catch (error) {
-            next(error);
-        }
-
-    } else {
-        res.status(400).send("Wrong input parameters")
-    }
-
+  } else {
+    res.status(400).send("Wrong input parameters");
+  }
 });
 module.exports = router;
