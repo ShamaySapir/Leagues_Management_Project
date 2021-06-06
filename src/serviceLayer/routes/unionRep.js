@@ -2,8 +2,7 @@ var express = require("express");
 const axios = require("axios");
 var router = express.Router();
 // const DButils = require("./utils/DButils");
-const path = require('path');
-const unionRep_domain = require(path.join(process.cwd(), "./src/domainLayer/unionRep_domain"));
+const unionRep_domain = require("../../domainLayer/unionRep_domain");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 //check if user is unionRep
@@ -31,13 +30,21 @@ router.post("/createMatches", async(req, res, next) => {
         },
     });
 
-    if (!leagues.data.data.contains(req.body.leagueId) || Object.size(leagues) == 0) {
+    if (!leagues.data.data.some(e => e.id == req.body.leagueId) || Object.size(leagues) == 0) {
         res.status(404).send("league not found")
     }
 
-    if (!seasons.data.data.contains(req.body.seasonId) || !seasons.data.data.leagueId == req.body.leagueId || Object.size(leagues) == 0) {
+
+    if (!seasons.data.data.some(e => { e.id == req.body.seasonId && e.leage_id == req.body.leagueId }) || Object.size(leagues) == 0) {
         res.status(404).send("season not found")
     }
+
+
+    // if (!seasons.data.data.some(e => e.leage_id == req.body.leagueId))
+
+    // if (!seasons.data.data.some(e => e.id == req.body.seasonId) || !seasons.data.data.some(e => e.leage_id == req.body.leagueId) || Object.size(leagues) == 0) {
+    //     res.status(404).send("season not found")
+    // }
 
     if (req.body.policy == 'undefined') {
         req.body.policy == 1;

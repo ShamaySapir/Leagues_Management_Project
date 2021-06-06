@@ -1,11 +1,12 @@
 const axios = require("axios");
 const path = require('path');
 const matches_utils = require(path.join(process.cwd(), "./src/dataLayer/utils/matches_utils"));
+const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 
 //policy == 1 : schedule matches so every two teams in the leage play together once
 async function scheduleByFirstPolicy(leagueId, seasonId) {
-    let teams = await axios.get(`${api_domain}/teams/seasons/${seasonId}`, {
+    let teams = await axios.get(`${api_domain}/teams/season/${seasonId}`, {
         params: {
             include: "league",
             api_token: process.env.api_token,
@@ -13,7 +14,7 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
     });
     teams = getTeamsByLeagueId(teams, leagueId);
 
-    let season = await axios.get(`${api_domain}/seasons/${seasonId}`, {
+    let season = await axios.get(`${api_domain}/season/${seasonId}`, {
         params: {
             api_token: process.env.api_token,
         },
