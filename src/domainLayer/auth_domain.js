@@ -29,7 +29,6 @@ async function login(username, password) {
 
 async function userRegister(user) {
 
-
     try {
         let user_info = await auth_utils.getUserInfo(user.username);
 

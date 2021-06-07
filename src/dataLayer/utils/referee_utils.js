@@ -7,8 +7,9 @@ async function insertRefereeInfo(user) {
     try {
         let user_id = await auth_utils.getUserId(user);
 
+        let query = `INSERT INTO dbo.Referees (userId,username) VALUES (${user_id.userId}, '${user.username}');`;
         DButils.execQuery(
-            `INSERT INTO dbo.Referees (userId,username) VALUES ('${user_id.userId}', '${user.username}');`
+            `INSERT INTO dbo.Referees (userId,username) VALUES (${user_id.userId}, '${user.username}');`
         )
 
         return true;
