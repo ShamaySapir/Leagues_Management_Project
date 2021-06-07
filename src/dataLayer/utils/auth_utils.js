@@ -20,19 +20,36 @@ async function getUserInfo(username) {
 
 async function insertUserInfo(user) {
     try {
+        if (!user.image) {
+            user.image = null;
+        }
 
-        let info = DButils.execQuery(
+        DButils.execQuery(
             `INSERT INTO dbo.Users (username, firstname, lastname, country, password , email , image) VALUES ('${user.username}','${user.firstName}', '${user.lastName}', '${user.country}', '${user.password}', '${user.email}', '${user.image}');`
         )
-        
-        return true;
+        return user;
 
     } catch (error) {
-       return false;
+        console.log(error);
     }
 
+}
+
+async function getUserId(user) {
+    try {
+        const user_id = (
+            await DButils.execQuery(
+                `SELECT userId FROM dbo.Users WHERE username = '${user.username}'`
+            )
+        )[0];
+        return user_id;
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
 exports.getUserInfo = getUserInfo;
 exports.insertUserInfo = insertUserInfo;
+exports.getUserId = getUserId;
