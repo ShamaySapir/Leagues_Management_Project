@@ -14,22 +14,16 @@ async function getTableSize() {
 }
 
 async function addMatchesToDB(matches) {
-    //TODO: implement the function
-    try
-    {
-        for (index = 0; index < matches.length; index++) 
-        {
+    try {
+        for (index = 0; index < matches.length; index++) {
             let match = matches[index];
 
-            DButils.execQuery
-            (
+            DButils.execQuery(
                 `INSERT INTO dbo.matches (leagueId, seasonId, stageId, matchDate, matchHour , homeTeam , awayTeam , stadium , refereeId, score) VALUES ('${match.leagueId}', '${match.seasonId}', ${match.stageId}, '${match.matchDate}', '${match.matchHour}', '${match.homeTeam}', '${match.awayTeam}','${match.stadium}', ${match.refereeId},${match.score});`
             )
         }
 
-    }
-    catch(err)
-    {
+    } catch (err) {
         return false;
     }
     return true;
