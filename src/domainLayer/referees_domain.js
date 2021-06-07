@@ -4,6 +4,8 @@ const referee_utils = require("../dataLayer/utils/referee_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const auth_domain = require("../domainLayer/auth_domain");
 const auth_utils = require("../dataLayer/utils/auth_utils");
+const matches_utils = require("../dataLayer/utils/matches_utils");
+const DButils = require("../dataLayer/utils/DButils.js");
 
 
 async function CreateReferee(req) {
@@ -14,7 +16,6 @@ async function CreateReferee(req) {
     let password = req.body.password;
     let email = req.body.email;
     let image;
-
 
     let user = {
         username: userName,
@@ -30,7 +31,6 @@ async function CreateReferee(req) {
         user.image = image;
     }
 
-
     try {
         user = await auth_domain.userRegister(user);
     } catch (error) {
@@ -43,9 +43,19 @@ async function CreateReferee(req) {
         throw { error: error }
     }
 
-
+    try {
+        //await insertToRefreeTable(user);
+        await RegisterArefereeToMatch();
+    } catch (error) {
+        throw { error: error }
+    }
 }
 
+async function RegisterArefereeToMatch() {
+    //let matches = await matches_utils.getMatches();
+    let matches = await DButils.getTableSize('Users');
+    let user = 4;
+}
 
 async function insertToRefereeTable(user) {
     await referee_utils.insertRefereeInfo(user);

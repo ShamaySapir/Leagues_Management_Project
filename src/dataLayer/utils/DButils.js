@@ -15,7 +15,7 @@ const config = {
 const pool = new sql.ConnectionPool(config);
 const poolConnect = pool.connect();
 
-exports.execQuery = async function(query) {
+async function execQuery(query) {
     await poolConnect;
     try {
         var result = await pool.request().query(query);
@@ -26,6 +26,16 @@ exports.execQuery = async function(query) {
     }
 };
 
+async function getTableSize(tableName) {
+    let length = await execQuery(
+        `SELECT COUNT(*) AS LEN FROM ${tableName};`
+    );
+
+    return (length[0])["LEN"];
+}
+
+exports.getTableSize = getTableSize;
+exports.execQuery = execQuery;
 // process.on("SIGINT", function () {
 //   if (pool) {
 //     pool.close(() => console.log("connection pool closed"));
