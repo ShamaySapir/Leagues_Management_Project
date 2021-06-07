@@ -12,7 +12,6 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
     },
   });
   teams = getTeamsByLeagueId(teams, leagueId);
-  console.log(teams.data.data);
   console.log("---------------------");
 
   let season = await axios.get(`${api_domain}/seasons/${seasonId}`, {
@@ -29,21 +28,18 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
   var date = year + "-01-01";
   date = new Date(date).toDateString();
 
-  let match_id = await getcurrentMatchId();
-
-  for (let index = 0; index < teams.data.data.length; index++) {
-    for (let j = index + 1; j < teams.data.data.length; j++) {
+  for (let index = 0; index < 2; index++) {
+    for (let j = index + 1; j < 2; j++) {
       let stage_id = await getStageBySeasonId(seasonId);
-      let stadium = await getStadium(teams.data.data[index].id);
+      let stadium = await getStadium(teams[index].id);
       let match = {
-        matchId: match_id + 1,
         leagueId: leagueId,
         seasonId: seasonId,
         stageId: stage_id,
         matchDate: date,
         matchHour: "20:00:00",
-        homeTeam: teams.data.data[index],
-        awayTeam: teams.data.data[j],
+        homeTeam: teams[index].name,
+        awayTeam: teams[j].name,
         stadium: stadium,
         refereeId: null,
         score: null,
@@ -51,7 +47,6 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
 
       matches.push(match);
       date = addDays(date, 7);
-      match_id++;
     }
   }
   console.log(matches);
@@ -68,13 +63,13 @@ async function writeToDB(data, table_name) {
   try {
     if (table_name == "matches") {
       let add_matches = await matches_utils.addMatchesToDB(data);
-      if (!add_matches) {
-        throw { message: "cannot write matches to DB" };
-      }
+      return add_matches;
     }
   } catch (error) {
     console.log(error);
   }
+  
+  return false;
 }
 
 async function scheduleBySecondPolicy(leagueId, seasonId) {
@@ -103,8 +98,6 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
   var date = year + "-01-01";
   date = new Date(date).toDateString();
 
-  let match_id = await getcurrentMatchId();
-
   for (let index = 0; index < teams.data.data.length; index++) {
     for (let j = index + 1; j < teams.data.data.length; j++) {
       //   let stage_id = await getStageBySeasonId(seasonId);
@@ -112,7 +105,6 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
       //   let stadium = await getStadium(teams.data.data[index].id);
       let stadium = "bloomfield";
       let match = {
-        matchId: match_id + 1,
         leagueId: leagueId,
         seasonId: seasonId,
         stageId: stage_id,
@@ -127,7 +119,6 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
 
       firstRoundMatches.push(match);
       date = addDays(date, 7);
-      match_id++;
     }
   }
   //   secondRoundMatches = [...firstRoundMatches];
@@ -135,7 +126,6 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
   //switch between homeTeam and awayTeam fot the second round
   secondRoundMatches.forEach((match) => {
     //new parameters
-    match_id++;
     date = addDays(date, 7);
     let former_homeTeam = match.homeTeam;
     let former_awayTeam = match.awayTeam;
@@ -157,16 +147,18 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
 
 function getTeamsByLeagueId(teams_info, leagueId) {
   let index = 0;
-  teams_info.data.data.map((team_info) => {
-    const { league } = team_info;
-    const { id } = league.data;
+  let validTeams = [];
+   teams_info.data.data.map((team_info) => {
+      const {league} = team_info;
+      const {id} = league.data;
 
-    if (id != leagueId) {
-      teams_info.data.data.slice(index);
-    }
-    index++;
-  });
-  return teams_info;
+      if(id == leagueId)
+      {
+          validTeams.push(team_info);
+      }
+      index++;
+    });
+    return validTeams;
 }
 
 async function getStageBySeasonId(seasonId) {
@@ -202,10 +194,7 @@ async function getStadium(team_id) {
   return team.data.data.venue.data.name;
 }
 
-async function getcurrentMatchId() {
-  let table_size = matches_utils.getTableSize();
-  return table_size;
-}
+
 
 exports.scheduleByFirstPolicy = scheduleByFirstPolicy;
 exports.scheduleBySecondPolicy = scheduleBySecondPolicy;
