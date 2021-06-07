@@ -3,14 +3,12 @@ const DButils = require("../utils/DButils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 
-async function getTableSize() {
+async function getMatches() {
     let matches = await DButils.execQuery(
         `select * from dbo.matches`
     );
 
-    let table_size = Object.size(matches);
-
-    return table_size;
+    return matches;
 }
 
 async function addMatchesToDB(matches) {
@@ -30,5 +28,5 @@ async function addMatchesToDB(matches) {
 }
 
 
-exports.getTableSize = getTableSize;
+exports.getMatches = getMatches;
 exports.addMatchesToDB = addMatchesToDB;

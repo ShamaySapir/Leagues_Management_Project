@@ -3,6 +3,8 @@ const { NText } = require("mssql");
 const referee_utils = require("../dataLayer/utils/referee_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const auth_domain = require("../domainLayer/auth_domain");
+const matches_utils = require("../dataLayer/utils/matches_utils");
+const DButils = require("../dataLayer/utils/DButils.js");
 
 async function CreateRefree(req) 
 {
@@ -43,7 +45,8 @@ async function CreateRefree(req)
 
     try
     {
-        await insertToRefreeTable(user);
+        //await insertToRefreeTable(user);
+        await RegisterArefereeToMatch();
     }
     catch (error)
     {
@@ -58,5 +61,13 @@ async function insertToRefreeTable(user)
 {
     await referee_utils.insertRefereeInfo(user.userId,user.username)
 } 
+
+async function RegisterArefereeToMatch()
+{
+    //let matches = await matches_utils.getMatches();
+    let matches = await DButils.getTableSize('Users');
+    let user = 4;
+} 
+
 
 exports.CreateRefree = CreateRefree;
