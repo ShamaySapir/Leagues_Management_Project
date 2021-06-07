@@ -25,4 +25,29 @@ async function login(username, password) {
     }
 }
 
+
+async function userRegister(user) {
+
+    
+    try {
+        let userInfo = await auth_utils.getUserInfo(user.username);
+        
+        // check if user is in the system already and ask bar if a user name is uniq or not 
+        if(Object.size(userInfo) != 0)
+        {
+            throw { message: "User exist already" };
+        }
+
+        else
+        {
+            user = await auth_utils.insertUserInfo(user);
+        }
+
+
+    } catch (error) {
+        throw { error: error}
+    }
+}
+
 exports.login = login;
+exports.userRegister = userRegister;
