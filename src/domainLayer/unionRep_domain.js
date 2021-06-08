@@ -2,6 +2,7 @@ const axios = require("axios");
 const { NText } = require("mssql");
 const matches_utils = require("../dataLayer/utils/matches_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
+const auth_utils = require("../dataLayer/utils/auth_utils");
 
 //policy == 1 : schedule matches so every two teams in the leage play together once
 async function scheduleByFirstPolicy(leagueId, seasonId) {
@@ -193,7 +194,20 @@ async function getStadium(team_id) {
     return team.data.data.venue.data.name;
 }
 
+//check if user is union rep
+
+async function UserIsUnionRep(userId) {
+    if (userId === undefined) {
+        return false
+    }
+
+    const isUnionRep = auth_utils.checkUnionRep(userId);
+    return isUnionRep;
+
+}
+
 
 
 exports.scheduleByFirstPolicy = scheduleByFirstPolicy;
 exports.scheduleBySecondPolicy = scheduleBySecondPolicy;
+exports.UserIsUnionRep = UserIsUnionRep;

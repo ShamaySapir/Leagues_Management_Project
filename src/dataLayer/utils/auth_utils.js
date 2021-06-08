@@ -49,7 +49,22 @@ async function getUserId(user) {
     }
 }
 
+async function checkUnionRep(userId) {
+    try {
+        let union_rep = await DButils.execQuery(
+            `SELECT * FROM unionRep WHERE unionRepId=${userId}`
+        )
+        if (!union_rep) { return false; }
+
+        return true;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 exports.getUserInfo = getUserInfo;
 exports.insertUserInfo = insertUserInfo;
 exports.getUserId = getUserId;
+exports.checkUnionRep = checkUnionRep;

@@ -1,0 +1,19 @@
+-- CREATE TABLE Users
+-- (
+--     userId INT IDENTITY (1,1) ,
+--     username NVARCHAR(15) NOT NULL,
+--     firstname NVARCHAR(15) NOT NULL,
+--     lastname NVARCHAR(15) NOT NULL,
+--     country NVARCHAR(15) NOT NULL,
+--     passwordHash NVARCHAR(15) NOT NULL,
+--     email NVARCHAR(15) NOT NULL,
+--     image NVARCHAR(100),
+--     PRIMARY KEY (userId, username)
+-- )
+
+-- CREATE TABLE UnionRep
+-- (
+--     UnionRepId INT IDENTITY (1,1) PRIMARY KEY ,
+--     userId INT NOT NULL,
+--     username NVARCHAR(15) NOT NULL,
+-- )
