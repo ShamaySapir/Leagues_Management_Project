@@ -37,7 +37,8 @@ async function CreateRefree(req) {
 
     try {
         await insertToRefreeTable(user);
-        await assignRefereeToMatch();
+        let refereeId = await referee_utils.getRefereeID(user.username);
+        await assignRefereeToMatch(refereeId);
     } catch (error) {
         throw { error: error }
     }
@@ -47,21 +48,17 @@ async function insertToRefreeTable(user) {
     await referee_utils.insertRefereeInfo(user.userId, user.username)
 }
 
-async function assignRefereeToMatch() {
+async function assignRefereeToMatch(refereeId) {
     //let matches = await matches_utils.getMatches();
     let matchesLength = await DButils.getTableSize('matches');
-    let refereeLength = await DButils.getTableSize('Referees');
 
     // in case the referee is less then then the games
-    if (refereeLength <= matchesLength) {
-        matches_utils.UpdateRefereeToMatch(refereeLength, refereeLength);
-    } else if (refereeLength) {
+    if (refereeId <= matchesLength) {
+        matches_utils.UpdateRefereeToMatch(refereeId, refereeId);
+    } else {
         let matchId = Math.floor(Math.random() * (matchesLength)) + 1;
-        matches_utils.UpdateRefereeToMatch(matchId, refereeLength);
+        matches_utils.UpdateRefereeToMatch(matchId, refereeId);
     }
-
-
 }
-
 
 exports.CreateRefree = CreateRefree;
