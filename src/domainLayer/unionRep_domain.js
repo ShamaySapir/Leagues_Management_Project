@@ -58,6 +58,8 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
     if (!wrote_to_DB) {
         throw { message: "failed to write matches to DB" };
     }
+
+    return matches;
 }
 
 async function writeToDB(data, table_name) {
@@ -99,21 +101,23 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
     var date = year + "-01-01";
     date = new Date(date).toDateString();
 
-    for (let index = 0; index < teams.data.data.length; index++) {
-        for (let j = index + 1; j < teams.data.data.length; j++) {
-            //   let stage_id = await getStageBySeasonId(seasonId);
-            let stage_id = 2020;
-            //   let stadium = await getStadium(teams.data.data[index].id);
-            let stadium = "bloomfield";
+    for (let index = 0; index < teams.length; index++) {
+        for (let j = index + 1; j < teams.length; j++) {
+            let stage_id = await getStageBySeasonId(seasonId);
+            let stadium = await getStadium(teams[index].id);
+            let awayTeam_stadium = await getStadium(teams[j].id);
             let match = {
                 leagueId: leagueId,
                 seasonId: seasonId,
                 stageId: stage_id,
                 matchDate: date,
                 matchHour: "20:00:00",
-                homeTeam: teams.data.data[index],
-                awayTeam: teams.data.data[j],
+                homeTeam: teams[index].name,
+                awayTeam: teams[j].name,
+                homeTeamId: teams[index].id,
+                awayTeamId: teams[j].id,
                 stadium: stadium,
+                awayTeam_stadium: awayTeam_stadium,
                 refereeId: null,
                 score: null,
             };
@@ -125,25 +129,38 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
     //   secondRoundMatches = [...firstRoundMatches];
     var secondRoundMatches = JSON.parse(JSON.stringify(firstRoundMatches));
     //switch between homeTeam and awayTeam fot the second round
-    secondRoundMatches.forEach((match) => {
-        //new parameters
-        date = addDays(date, 7);
-        let former_homeTeam = match.homeTeam;
-        let former_awayTeam = match.awayTeam;
 
-        //update
-        match.matchId = match_id;
-        match.homeTeam = former_awayTeam;
-        match.awayTeam = former_homeTeam;
-        // match.stadium = getStadium(former_awayTeam.id);
-        match.stadium = "second stadium";
-        match.date = date;
+    secondRoundMatches.map(async(match) => {
+        try {
+            //new parameters
+            date = addDays(date, 7);
+            let former_homeTeam = match.homeTeam;
+            let former_awayTeam = match.awayTeam;
+            let former_homeTeamId = match.homeTeamId;
+            let former_awayTeamId = match.awayTeamId;
+            let stadium = match.awayTeam_stadium;
+            //update
+
+            // match.matchId = match_id;
+            match.homeTeam = former_awayTeam;
+            match.awayTeam = former_homeTeam;
+            match.homeTeamId = former_awayTeamId;
+            match.awayTeamId = former_homeTeamId;
+            // match.stadium = getStadium(former_awayTeam.id);
+            match.stadium = stadium;
+            // match.date = date;
+        } catch (error) { console.log(error); }
+
     });
 
     allMatches = firstRoundMatches.concat(secondRoundMatches);
-    return allMatches;
 
-    //TODO: add matches to DB
+    //add matches to DB
+    let wrote_to_DB = await writeToDB(allMatches, "matches");
+    if (!wrote_to_DB) {
+        throw { message: "failed to write matches to DB" };
+    }
+    return allMatches;
 }
 
 function getTeamsByLeagueId(teams_info, leagueId) {
@@ -201,7 +218,7 @@ async function UserIsUnionRep(userId) {
         return false
     }
 
-    const isUnionRep = auth_utils.checkUnionRep(userId);
+    const isUnionRep = await auth_utils.checkUnionRep(userId);
     return isUnionRep;
 
 }

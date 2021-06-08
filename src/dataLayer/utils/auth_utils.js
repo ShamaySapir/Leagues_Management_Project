@@ -52,9 +52,10 @@ async function getUserId(user) {
 async function checkUnionRep(userId) {
     try {
         let union_rep = await DButils.execQuery(
-            `SELECT * FROM unionRep WHERE unionRepId=${userId}`
+            `SELECT unionRepId FROM unionRep WHERE userId=${userId}`
         )
-        if (!union_rep) { return false; }
+        let len = union_rep.length;
+        if (!union_rep || union_rep.length == 0) { return false; }
 
         return true;
 

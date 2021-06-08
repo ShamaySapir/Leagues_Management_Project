@@ -18,7 +18,7 @@ async function login(username, password) {
             // throw { status: 401, message: "Username or Password incorrect" };
             return false;
         }
-        return true;
+        return userInfo.userId;
 
     } catch (error) {
         return false;

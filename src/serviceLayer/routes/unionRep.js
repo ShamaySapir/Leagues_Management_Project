@@ -9,7 +9,7 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 router.use("/createMatches", async(req, res, next) => {
     try {
         //check if user has FAR access
-        const isValid = await unionRep_domain.UserIsUnionRep(req.session.userId);
+        const isValid = await unionRep_domain.UserIsUnionRep(req.session.user_id);
         if (isValid) { next() } else { throw { status: 500, message: "User is not Union representative" } };
 
 
@@ -36,11 +36,7 @@ router.post("/createMatches", async(req, res, next) => {
         res.status(404).send("league not found");
     }
 
-    if (!seasons.data.data.some(
-            (e) => e.id == req.body.seasonId && e.league_id == req.body.leagueId
-        ) ||
-        Object.size(seasons) == 0
-    ) {
+    if (!seasons.data.data.some((e) => e.id == req.body.seasonId && e.league_id == req.body.leagueId) || Object.size(seasons) == 0) {
         res.status(404).send("league not found");
     }
 
