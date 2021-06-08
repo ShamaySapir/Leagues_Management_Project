@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const referee_utils = require("../dataLayer/utils/referee_utils");
 const auth_domain = require("../domainLayer/auth_domain");
-const matches_utils = require("../dataLayer/utils/matches_utils");
+const matches_utils = require("./dataLayer/utils/matches_utils");
 const DButils = require("./dataLayer/utils/DButils.js");
 
 async function CreateRefree(req) {
@@ -14,6 +14,7 @@ async function CreateRefree(req) {
     let email = req.body.email;
     let image;
 
+    // check paremters
     let user = {
         username: userName,
         firstName: userFirstName,
