@@ -55,7 +55,7 @@ async function RegisterArefereeToMatch(refereeId) {
     // in case the referee is less then then the games
     if (refereeId <= matchesLength) {
         matches_utils.UpdateRefereeToMatch(refereeId, refereeId);
-    } else if (refereeId) {
+    } else {
         let matchId = Math.floor(Math.random() * (matchesLength)) + 1;
         matches_utils.UpdateRefereeToMatch(matchId, refereeId);
     }
