@@ -51,17 +51,21 @@ async function insertToRefreeTable(user) {
 
 async function assignRefereeToMatch(refereeId, matchId) {
   let matches = await matches_utils.getMatches();
-  console.log(matches);
-  //   if( matches.includes("Mango");) {}
-  let matchesLength = await DButils.getTableSize("matches");
+
+  const isMatchPresent = matches.find((match) => match.matchId === matchId);
+  if (!isMatchPresent) {
+    throw { error: "match doesnt exist" };
+  }
+  matches_utils.UpdateRefereeToMatch(matchId, refereeId);
+  //   let matchesLength = await DButils.getTableSize("matches");
 
   // in case the referee is less then then the games
-  if (refereeId <= matchesLength) {
-    matches_utils.UpdateRefereeToMatch(refereeId, refereeId);
-  } else {
-    let matchId = Math.floor(Math.random() * matchesLength) + 1;
-    matches_utils.UpdateRefereeToMatch(matchId, refereeId);
-  }
+  //   if (refereeId <= matchesLength) {
+  //     matches_utils.UpdateRefereeToMatch(refereeId, refereeId);
+  //   } else {
+  //     let matchId = Math.floor(Math.random() * matchesLength) + 1;
+  //     matches_utils.UpdateRefereeToMatch(matchId, refereeId);
+  //   }
 }
 
 exports.CreateRefree = CreateRefree;
