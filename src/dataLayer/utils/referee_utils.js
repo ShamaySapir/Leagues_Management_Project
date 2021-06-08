@@ -20,4 +20,13 @@ async function insertRefereeInfo(user) {
 
 }
 
+async function getRefereeID(username) {
+    let Referee = await DButils.execQuery(
+        `select refereeId from dbo.Referees WHERE username = ${username};`
+    );
+
+    return Referee[0]["refereeId"];
+}
+
 exports.insertRefereeInfo = insertRefereeInfo;
+exports.getRefereeID = getRefereeID;
