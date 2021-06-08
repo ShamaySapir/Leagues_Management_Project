@@ -5,8 +5,7 @@ const auth_domain = require("../domainLayer/auth_domain");
 const matches_utils = require("../dataLayer/utils/matches_utils");
 const DButils = require("./dataLayer/utils/DButils.js");
 
-async function CreateRefree(req) 
-{
+async function CreateRefree(req) {
     let userName = req.body.userName;
     let userFirstName = req.body.userFirstname;
     let userLastName = req.body.userLastname;
@@ -14,74 +13,55 @@ async function CreateRefree(req)
     let password = req.body.password;
     let email = req.body.email;
     let image;
-  
 
-    let user = 
-    {
-        username : userName,
-        firstName : userFirstName,
-        lastName :userLastName,
-        country : country,
-        password : password,
-        email : email,
+    let user = {
+        username: userName,
+        firstName: userFirstName,
+        lastName: userLastName,
+        country: country,
+        password: password,
+        email: email,
     }
-    
-    if(req.body.image)
-    {
+
+    if (req.body.image) {
         image = req.body.image;
         user.image = image;
     }
 
 
-    try
-    {
+    try {
         user = await auth_domain.userRegister(user);
-    }
-    catch (error)
-    {
-        throw { error: error}
+    } catch (error) {
+        throw { error: error }
     }
 
-    try
-    {
-        //await insertToRefreeTable(user);
+    try {
+        await insertToRefreeTable(user);
         await RegisterArefereeToMatch();
+    } catch (error) {
+        throw { error: error }
     }
-    catch (error)
-    {
-        throw { error: error}
-    }
-
-
 }
 
+async function insertToRefreeTable(user) {
+    await referee_utils.insertRefereeInfo(user.userId, user.username)
+}
 
-async function insertToRefreeTable(user)
-{
-    await referee_utils.insertRefereeInfo(user.userId,user.username)
-} 
-
-async function RegisterArefereeToMatch()
-{
+async function RegisterArefereeToMatch() {
     //let matches = await matches_utils.getMatches();
     let matchesLength = await DButils.getTableSize('matches');
     let refereeLength = await DButils.getTableSize('Referees');
 
     // in case the referee is less then then the games
-    if(refereeLength <= matchesLength)
-    {
-        matches_utils.UpdateRefereeToMatch(refereeLength,refereeLength);
+    if (refereeLength <= matchesLength) {
+        matches_utils.UpdateRefereeToMatch(refereeLength, refereeLength);
+    } else if (refereeLength) {
+        let matchId = Math.floor(Math.random() * (matchesLength)) + 1;
+        matches_utils.UpdateRefereeToMatch(matchId, refereeLength);
     }
-    
-    else if(refereeLength)
-    {
-        let matchId =  Math.floor(Math.random() * (matchesLength )) + 1;
-        matches_utils.UpdateRefereeToMatch(matchId,refereeLength);
-    }
-    
-    // changes
-    
-} 
+
+
+}
 
 
 exports.CreateRefree = CreateRefree;
