@@ -27,17 +27,17 @@ async function addMatchesToDB(matches) {
     return true;
 }
 
-async function UpdateRefereeToMatch(matchId,refereeId) {
+async function UpdateRefereeToMatch(matchId, refereeId) {
     try {
 
         DButils.execQuery(
             `UPDATE dbo.matches SET refereeId = ${refereeId} WHERE matchId = ${matchId};`
         )
-    } 
-    catch (err) {
+        return true;
+
+    } catch (err) {
         return false;
     }
-    return true;
 }
 
 
