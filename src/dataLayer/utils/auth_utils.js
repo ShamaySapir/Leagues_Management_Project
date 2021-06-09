@@ -42,7 +42,7 @@ async function getUserId(user) {
                 `SELECT userId FROM dbo.Users WHERE username = '${user.username}'`
             )
         )[0];
-        return user_id;
+        return user_id.userId;
 
     } catch (error) {
         console.log(error);
