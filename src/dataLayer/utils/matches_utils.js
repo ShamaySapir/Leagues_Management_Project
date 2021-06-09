@@ -31,5 +31,5 @@ async function UpdateRefereeToMatch(matchId, refereeId) {
 }
 
 exports.getMatches = getMatches;
-exports.addMatchesToDB = addMatchesToDB;
+// exports.addMatchesToDB = addMatchesToDB;
 exports.UpdateRefereeToMatch = UpdateRefereeToMatch;
