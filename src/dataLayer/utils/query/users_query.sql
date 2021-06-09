@@ -6,4 +6,4 @@
 -- VALUES ('amit', 'Amit', 'Ostrov', 'Israel', '123456', 'amit@blabla.com', '');
 
 -- INSERT INTO dbo.UnionRep (userId, username)
--- VALUES (1, 'amit');
+-- VALUES (1, 'bar');

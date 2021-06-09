@@ -35,15 +35,17 @@ async function CreateReferee(req) {
     }
 
     try {
-        user = await auth_domain.userRegister(user);
+        // user = await auth_domain.userRegister(user);
     } catch (error) {
         console.error(error);
         throw { error: error };
     }
 
+
     try {
         let insertion_success = await insertToRefreeTable(user);
-        if (insertion_success) {
+        //TODO : decide what to do if match id is null.
+        if (insertion_success && matchId) {
             let refereeId = await referee_utils.getRefereeID(user.username);
             let assigned = await assignRefereeToMatch(refereeId, matchId);
             return assigned;
@@ -56,6 +58,10 @@ async function CreateReferee(req) {
 
 async function insertToRefreeTable(user) {
     const userId = await auth_utils.getUserId(user);
+    let referee_exist = await referee_utils.getRefereeID(user.username);
+    if (referee_exist) {
+        throw { error: "Referee already exist" };
+    }
     let referee_added = await referee_utils.insertRefereeInfo(userId, user.username);
     return referee_added;
 }
