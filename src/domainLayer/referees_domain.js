@@ -1,5 +1,4 @@
 const axios = require("axios");
-
 const referee_utils = require("../dataLayer/utils/referee_utils");
 const auth_domain = require("../domainLayer/auth_domain");
 const matches_utils = require("../dataLayer/utils/matches_utils");
@@ -14,6 +13,7 @@ async function CreateRefree(req) {
   let password = req.body.password;
   let email = req.body.email;
   let image;
+  let matchId = null;
 
   let user = {
     username: userName,
@@ -29,6 +29,10 @@ async function CreateRefree(req) {
     user.image = image;
   }
 
+  if (req.body.matchId) {
+    matchId = req.body.matchId;
+  }
+
   try {
     user = await auth_domain.userRegister(user);
   } catch (error) {
@@ -38,7 +42,7 @@ async function CreateRefree(req) {
   try {
     await insertToRefreeTable(user);
     let refereeId = await referee_utils.getRefereeID(user.username);
-    await assignRefereeToMatch(refereeId);
+    await assignRefereeToMatch(refereeId, matchId);
   } catch (error) {
     throw { error: error };
   }
@@ -50,6 +54,10 @@ async function insertToRefreeTable(user) {
 }
 
 async function assignRefereeToMatch(refereeId, matchId) {
+  if (matchId == null) {
+    throw { error: "matchId required" };
+  }
+
   let matches = await matches_utils.getMatches();
 
   const isMatchPresent = matches.find((match) => match.matchId === matchId);
@@ -57,15 +65,5 @@ async function assignRefereeToMatch(refereeId, matchId) {
     throw { error: "match doesnt exist" };
   }
   matches_utils.UpdateRefereeToMatch(matchId, refereeId);
-  //   let matchesLength = await DButils.getTableSize("matches");
-
-  // in case the referee is less then then the games
-  //   if (refereeId <= matchesLength) {
-  //     matches_utils.UpdateRefereeToMatch(refereeId, refereeId);
-  //   } else {
-  //     let matchId = Math.floor(Math.random() * matchesLength) + 1;
-  //     matches_utils.UpdateRefereeToMatch(matchId, refereeId);
-  //   }
 }
-
 exports.CreateRefree = CreateRefree;

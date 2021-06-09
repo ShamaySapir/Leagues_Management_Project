@@ -56,7 +56,7 @@ const port = process.env.PORT;
 const auth = require("./serviceLayer/routes/auth");
 const matches = require("./serviceLayer/routes/matches");
 const referees = require("./serviceLayer/routes/referees");
-const unionRep = require("./serviceLayer/routes/unionRep");
+
 
 //#endregion
 
@@ -82,7 +82,7 @@ app.get("/alive", (req, res) => res.send("I'm alive"));
 // Routings
 app.use("/matches", matches);
 app.use("/referees", referees);
-app.use("/unionRep", unionRep);
+
 
 app.use(auth);
 

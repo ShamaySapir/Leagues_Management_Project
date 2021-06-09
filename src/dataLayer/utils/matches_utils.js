@@ -34,6 +34,6 @@ async function addMatchesToDB(matches) {
   return true;
 }
 
-exports.UpdateRefereeToMatch = UpdateRefereeToMatch;
 exports.getMatches = getMatches;
 exports.addMatchesToDB = addMatchesToDB;
+exports.UpdateRefereeToMatch = UpdateRefereeToMatch;

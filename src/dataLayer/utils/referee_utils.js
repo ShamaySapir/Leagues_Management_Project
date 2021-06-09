@@ -5,17 +5,16 @@ const auth_utils = require("../utils/auth_utils");
 async function insertRefereeInfo(id, username) {
   try {
     DButils.execQuery(
-      `INSERT INTO dbo.Referees (userId,username) VALUES (${id}, '${username}');`
+      `INSERT INTO dbo.matches (userId, username) VALUES (${id}, '${username}');`
     );
-    return true;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
 async function getRefereeID(username) {
   let Referee = await DButils.execQuery(
-    `select refereeId from dbo.Referees WHERE username = ${username};`
+    `SELECT * from dbo.Referees WHERE username = '${username}';`
   );
 
   return Referee[0]["refereeId"];
