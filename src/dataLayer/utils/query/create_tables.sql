@@ -1,5 +1,5 @@
--- Drop table matches
-
+-- -- Drop table UnionRep
+-- -- DELETE FROM Referees
 -- CREATE TABLE dbo.matches
 -- (
 --     matchId INTEGER IDENTITY(1,1) NOT NULL, -- primary key column
@@ -31,6 +31,13 @@
 -- CREATE TABLE UnionRep
 -- (
 --     UnionRepId INT IDENTITY (1,1) PRIMARY KEY ,
+--     userId INT NOT NULL,
+--     username NVARCHAR(15) NOT NULL,
+-- )
+
+-- CREATE TABLE Referees
+-- (
+--     refereeId INT IDENTITY (1,1) PRIMARY KEY ,
 --     userId INT NOT NULL,
 --     username NVARCHAR(15) NOT NULL,
 -- )

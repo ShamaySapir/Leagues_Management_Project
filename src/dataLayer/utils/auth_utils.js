@@ -12,7 +12,8 @@ async function getUserInfo(username) {
 
         return user;
     } catch (error) {
-        next(error);
+        console.error(error);
+        throw { error: error };
     }
 
 }
@@ -30,7 +31,7 @@ async function insertUserInfo(user) {
         return user;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 
 }
@@ -45,7 +46,7 @@ async function getUserId(user) {
         return user_id.userId;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -60,7 +61,7 @@ async function checkUnionRep(userId) {
         return true;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
