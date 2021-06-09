@@ -5,10 +5,10 @@ const matches_utils = require("../dataLayer/utils/matches_utils");
 const DButils = require("../dataLayer/utils/DButils.js");
 const auth_utils = require("../dataLayer/utils/auth_utils");
 
-async function CreateRefree(req) {
+async function CreateReferee(req) {
   let userName = req.body.userName;
-  let userFirstName = req.body.userFirstName;
-  let userLastName = req.body.userLastName;
+  let userFirstName = req.body.firstName;
+  let userLastName = req.body.lastName;
   let country = req.body.country;
   let password = req.body.password;
   let email = req.body.email;
@@ -34,23 +34,36 @@ async function CreateRefree(req) {
   }
 
   try {
-    user = await auth_domain.userRegister(user);
+    // user = await auth_domain.userRegister(user);
   } catch (error) {
+    console.error(error);
     throw { error: error };
   }
 
   try {
-    await insertToRefreeTable(user);
-    let refereeId = await referee_utils.getRefereeID(user.username);
-    await assignRefereeToMatch(refereeId, matchId);
+    let insertion_success = await insertToRefreeTable(user);
+    //TODO : decide what to do if match id is null.
+    if (insertion_success && matchId) {
+      let refereeId = await referee_utils.getRefereeID(user.username);
+      let assigned = await assignRefereeToMatch(refereeId, matchId);
+      return assigned;
+    }
   } catch (error) {
-    throw { error: error };
+    throw { error };
   }
 }
 
 async function insertToRefreeTable(user) {
   const userId = await auth_utils.getUserId(user);
-  await referee_utils.insertRefereeInfo(userId, user.username);
+  let referee_exist = await referee_utils.getRefereeID(user.username);
+  if (referee_exist) {
+    throw { error: "Referee already exist" };
+  }
+  let referee_added = await referee_utils.insertRefereeInfo(
+    userId,
+    user.username
+  );
+  return referee_added;
 }
 
 async function assignRefereeToMatch(refereeId, matchId) {
@@ -65,5 +78,6 @@ async function assignRefereeToMatch(refereeId, matchId) {
     throw { error: "match doesnt exist" };
   }
   matches_utils.UpdateRefereeToMatch(matchId, refereeId);
+  return true;
 }
-exports.CreateRefree = CreateRefree;
+exports.CreateReferee = CreateReferee;

@@ -19,19 +19,15 @@ async function UpdateRefereeToMatch(matchId, refereeId) {
   return true;
 }
 
-async function addMatchesToDB(matches) {
+async function UpdateRefereeToMatch(matchId, refereeId) {
   try {
-    for (index = 0; index < matches.length; index++) {
-      let match = matches[index];
-
-      DButils.execQuery(
-        `INSERT INTO dbo.matches (leagueId, seasonId, stageId, matchDate, matchHour , homeTeam , awayTeam , stadium , refereeId, score) VALUES ('${match.leagueId}', '${match.seasonId}', ${match.stageId}, '${match.matchDate}', '${match.matchHour}', '${match.homeTeam}', '${match.awayTeam}','${match.stadium}', ${match.refereeId},${match.score});`
-      );
-    }
+    DButils.execQuery(
+      `UPDATE dbo.matches SET refereeId = ${refereeId} WHERE matchId = ${matchId};`
+    );
+    return true;
   } catch (err) {
     return false;
   }
-  return true;
 }
 
 exports.getMatches = getMatches;

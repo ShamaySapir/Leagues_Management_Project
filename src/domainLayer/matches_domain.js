@@ -69,7 +69,7 @@ async function writeToDB(data, table_name) {
             return add_matches;
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 
     return false;
@@ -149,7 +149,7 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
             // match.stadium = getStadium(former_awayTeam.id);
             match.stadium = stadium;
             // match.date = date;
-        } catch (error) { console.log(error); }
+        } catch (error) { console.error(error); }
 
     });
 
