@@ -4,7 +4,7 @@ const auth_utils = require("../utils/auth_utils");
 
 async function insertRefereeInfo(id, username) {
     try {
-        DButils.execQuery(
+        let add = await DButils.execQuery(
             `INSERT INTO dbo.Referees (userId, username) VALUES (${id}, '${username}');`
         );
         return true;
