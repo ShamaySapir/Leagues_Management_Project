@@ -3,3 +3,4 @@
 .env
 help.md
 dist
+.vscode/

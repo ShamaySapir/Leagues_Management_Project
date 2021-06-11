@@ -1,18 +1,17 @@
-const axios = require("axios");
 const DButils = require("../utils/DButils");
 
 async function getUserInfo(username) {
   try {
-    const user = (
-      await DButils.execQuery(
-        `SELECT * FROM dbo.Users WHERE username = '${username}'`
-      )
-    )[0];
+    const user = await DButils.execQuery(
+      `SELECT * FROM dbo.Users WHERE username = '${username}'`
+    );
 
-    return user;
+    let result = null;
+    if (user && user.length) result = user[0];
+    return result;
   } catch (error) {
     console.error(error);
-    throw { error: error };
+    throw error;
   }
 }
 
