@@ -47,15 +47,14 @@ async function getUserId(user) {
 
 async function checkUnionRep(userId) {
   try {
-    let union_rep = await DButils.execQuery(
+    const union_rep = await DButils.execQuery(
       `SELECT unionRepId FROM unionRep WHERE userId=${userId}`
     );
-    let len = union_rep.length;
-    if (!union_rep || union_rep.length == 0) {
-      return false;
+    let result = false;
+    if (union_rep && union_rep.length) {
+      result = true;
     }
-
-    return true;
+    return result;
   } catch (error) {
     console.error(error);
     throw error;

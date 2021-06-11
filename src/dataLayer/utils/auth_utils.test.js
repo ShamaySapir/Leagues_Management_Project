@@ -2,8 +2,12 @@ jest.mock("../utils/DButils");
 const auth_utils = require("../utils/auth_utils");
 const mockDButils = require("../utils/DButils");
 
-const mockExecQuery = (mockUserInfo) =>
-  mockDButils.execQuery.mockImplementation(mockUserInfo);
+const mockExecQuery = (mockFunc) =>
+  mockDButils.execQuery.mockImplementation(mockFunc);
+
+const mockError = async () => {
+  throw new Error("some network issue occured");
+};
 
 describe("getUserInfo", () => {
   beforeEach(() => jest.resetAllMocks());
@@ -31,9 +35,6 @@ describe("getUserInfo", () => {
   });
 
   test("should return an error", async () => {
-    const mockError = async () => {
-      throw new Error("some network issue occured");
-    };
     mockExecQuery(mockError);
     await expect(auth_utils.getUserInfo("ran")).rejects.toThrow();
   });
@@ -80,9 +81,6 @@ describe("insertUserInfo", () => {
   });
 
   test("should return an error", async () => {
-    const mockError = async () => {
-      throw new Error("some network issue occured");
-    };
     mockExecQuery(mockError);
     await expect(auth_utils.insertUserInfo(user)).rejects.toThrow();
   });
@@ -124,10 +122,7 @@ describe("getUserId", () => {
   });
 
   test("should return an error", async () => {
-    const mockUserInfo = async () => {
-      throw new Error("some network issue occured");
-    };
-    mockExecQuery(mockUserInfo);
+    mockExecQuery(mockError);
     await expect(auth_utils.getUserId(user)).rejects.toThrow();
   });
 });
@@ -135,34 +130,33 @@ describe("getUserId", () => {
 describe("checkUnionRep", () => {
   beforeEach(() => jest.resetAllMocks());
 
-  test("should find and return user info", async () => {
-    const mockUserInfo = ["amit"];
-    mockExecQuery(async () => mockUserInfo);
-    const result = await auth_utils.getUserInfo("amit");
-    expect(result).toEqual("amit");
+  const mockUserId = 1;
+
+  test("should find and return true", async () => {
+    const mockRepId = "1234";
+    mockExecQuery(async () => mockRepId);
+    const result = await auth_utils.checkUnionRep(mockUserId);
+    expect(result).toBe(true);
   });
 
   test("should check query", async () => {
-    const mockUserInfo = ["amit"];
-    const mockedImp = mockExecQuery(async () => mockUserInfo);
-    await auth_utils.getUserInfo("amit");
+    const mockRepId = "1234";
+    const mockedImp = mockExecQuery(async () => mockRepId);
+    await auth_utils.checkUnionRep(mockUserId);
     const query = mockedImp.mock.calls[0][0];
-    expect(query).toEqual(`SELECT * FROM dbo.Users WHERE username = 'amit'`);
+    expect(query).toEqual(`SELECT unionRepId FROM unionRep WHERE userId=1`);
   });
 
-  test("should not find user and return error", async () => {
-    const mockUserInfo = null;
-    mockExecQuery(async () => mockUserInfo);
-    const result = await auth_utils.getUserInfo("sapir");
-    expect(result).toBeNull();
+  test("should not find user and return false", async () => {
+    const mockRepId = null;
+    mockExecQuery(async () => mockRepId);
+    const result = await auth_utils.checkUnionRep(mockUserId);
+    expect(result).toBe(false);
   });
 
-  test("should return error of timeout", async () => {
-    const mockUserInfo = async () => {
-      throw new Error("some network issue occured");
-    };
-    mockExecQuery(mockUserInfo);
-    await expect(auth_utils.getUserInfo("ran")).rejects.toThrow();
+  test("should return an error", async () => {
+    mockExecQuery(mockError);
+    await expect(auth_utils.checkUnionRep(mockUserId)).rejects.toThrow();
   });
 });
 
