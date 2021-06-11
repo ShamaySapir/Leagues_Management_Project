@@ -21,12 +21,13 @@ async function insertUserInfo(user) {
       user.image = null;
     }
 
-    DButils.execQuery(
+    await DButils.execQuery(
       `INSERT INTO dbo.Users (username, firstname, lastname, country, password , email , image) VALUES ('${user.username}','${user.firstName}', '${user.lastName}', '${user.country}', '${user.password}', '${user.email}', '${user.image}');`
     );
     return user;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
@@ -40,6 +41,7 @@ async function getUserId(user) {
     return user_id.userId;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
@@ -56,6 +58,7 @@ async function checkUnionRep(userId) {
     return true;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 async function getUsers() {
