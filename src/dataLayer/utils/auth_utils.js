@@ -61,7 +61,7 @@ async function checkUnionRep(userId) {
   }
 }
 async function getUsers() {
-  let users = await DButils.execQuery(`select * from dbo.Users`);
+  const users = await DButils.execQuery(`select * from dbo.Users`);
 
   return users;
 }

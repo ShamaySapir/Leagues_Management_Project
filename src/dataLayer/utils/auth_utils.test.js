@@ -163,33 +163,27 @@ describe("checkUnionRep", () => {
 describe("getUsers", () => {
   beforeEach(() => jest.resetAllMocks());
 
-  test("should find and return user info", async () => {
-    const mockUserInfo = ["amit"];
-    mockExecQuery(async () => mockUserInfo);
-    const result = await auth_utils.getUserInfo("amit");
-    expect(result).toEqual("amit");
+  test("should find and return users", async () => {
+    const mockUsers = [
+      {
+        username: "amit",
+        firstName: "Amit",
+        lastName: "Ostrov",
+        country: "Israel",
+        password: "123456",
+        email: "amit@blabla.com",
+        image: "",
+      },
+    ];
+    mockExecQuery(async () => mockUsers);
+    const result = await auth_utils.getUsers();
+    expect(result).toEqual(mockUsers);
   });
 
-  test("should check query", async () => {
-    const mockUserInfo = ["amit"];
-    const mockedImp = mockExecQuery(async () => mockUserInfo);
-    await auth_utils.getUserInfo("amit");
-    const query = mockedImp.mock.calls[0][0];
-    expect(query).toEqual(`SELECT * FROM dbo.Users WHERE username = 'amit'`);
-  });
-
-  test("should not find user and return error", async () => {
-    const mockUserInfo = null;
-    mockExecQuery(async () => mockUserInfo);
-    const result = await auth_utils.getUserInfo("sapir");
-    expect(result).toBeNull();
-  });
-
-  test("should return error of timeout", async () => {
-    const mockUserInfo = async () => {
-      throw new Error("some network issue occured");
-    };
-    mockExecQuery(mockUserInfo);
-    await expect(auth_utils.getUserInfo("ran")).rejects.toThrow();
+  test("should not find users", async () => {
+    const mockUsers = [];
+    mockExecQuery(async () => mockUsers);
+    const result = await auth_utils.getUsers();
+    expect(result).toEqual(mockUsers);
   });
 });
