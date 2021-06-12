@@ -45,7 +45,7 @@ describe("getMatches", () => {
     const mockedImp = mockExecQuery(async () => mockMatches);
     await matches_utils.getMatches(mockMatches);
     const query = mockedImp.mock.calls[0][0];
-    expect(query).toEqual(`select * from dbo.matches`);
+    expect(query).toEqual(`select * from dbo.matches;`);
   });
 
   test("should return an error", async () => {

@@ -1,7 +1,6 @@
-const axios = require("axios");
 const DButils = require("../utils/DButils");
-const auth_utils = require("../utils/auth_utils");
 
+// TODO add should be const
 async function insertRefereeInfo(id, username) {
   try {
     let add = await DButils.execQuery(
@@ -10,9 +9,11 @@ async function insertRefereeInfo(id, username) {
     return true;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
+// TODO Referee should be const, no try catch? if Referee is null there is not .length => Error
 async function getRefereeID(username) {
   let Referee = await DButils.execQuery(
     `SELECT * from dbo.Referees WHERE username = '${username}';`
@@ -21,9 +22,10 @@ async function getRefereeID(username) {
     return -1;
   }
 
-  return Referee[0]["refereeId"];
+  return Referee[0].refereeId;
 }
 
+// TODO: add try catch, change to const
 async function getReferees() {
   let Referees = await DButils.execQuery(
     `SELECT [refereeId], [userId], [username] from dbo.Referees;`

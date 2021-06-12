@@ -3,7 +3,7 @@ const DButils = require("../utils/DButils");
 async function getUserInfo(username) {
   try {
     const user = await DButils.execQuery(
-      `SELECT * FROM dbo.Users WHERE username = '${username}'`
+      `SELECT * FROM dbo.Users WHERE username = '${username}';`
     );
 
     let result = null;
@@ -35,7 +35,7 @@ async function getUserId(user) {
   try {
     const user_id = (
       await DButils.execQuery(
-        `SELECT userId FROM dbo.Users WHERE username = '${user.username}'`
+        `SELECT userId FROM dbo.Users WHERE username = '${user.username}';`
       )
     )[0];
     return user_id.userId;
@@ -62,7 +62,7 @@ async function checkUnionRep(userId) {
 }
 // TODO: add try catch, change to const
 async function getUsers() {
-  let users = await DButils.execQuery(`select * from dbo.Users`);
+  let users = await DButils.execQuery(`select * from dbo.Users;`);
 
   return users;
 }

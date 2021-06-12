@@ -2,7 +2,7 @@ const DButils = require("../utils/DButils");
 
 // TODO: add try catch, change to const
 async function getMatches() {
-  let matches = await DButils.execQuery(`select * from dbo.matches`);
+  let matches = await DButils.execQuery(`select * from dbo.matches;`);
 
   return matches;
 }

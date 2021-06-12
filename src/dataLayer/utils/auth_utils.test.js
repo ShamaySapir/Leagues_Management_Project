@@ -24,7 +24,7 @@ describe("getUserInfo", () => {
     const mockedImp = mockExecQuery(async () => mockUsername);
     await auth_utils.getUserInfo("amit");
     const query = mockedImp.mock.calls[0][0];
-    expect(query).toEqual(`SELECT * FROM dbo.Users WHERE username = 'amit'`);
+    expect(query).toEqual(`SELECT * FROM dbo.Users WHERE username = 'amit';`);
   });
 
   test("should not find user and return null", async () => {
@@ -112,7 +112,7 @@ describe("getUserId", () => {
     await auth_utils.getUserId(user);
     const query = mockedImp.mock.calls[0][0];
     expect(query).toEqual(
-      `SELECT userId FROM dbo.Users WHERE username = 'amit'`
+      `SELECT userId FROM dbo.Users WHERE username = 'amit';`
     );
   });
 
@@ -185,7 +185,7 @@ describe("getUsers", () => {
     const mockedImp = mockExecQuery(async () => mockUsers);
     await auth_utils.getUsers();
     const query = mockedImp.mock.calls[0][0];
-    expect(query).toEqual(`select * from dbo.Users`);
+    expect(query).toEqual(`select * from dbo.Users;`);
   });
 
   test("should not find users", async () => {
