@@ -1,50 +1,59 @@
-var express = require("express");
-var router = express.Router();
-const path = require("path");
-const auth_utils = require("../dataLayer/utils/auth_utils");
-const bcrypt = require("bcryptjs");
-const { nextTick } = require("process");
+jest.mock("../dataLayer/utils/DButils");
+const auth_domain = require("./auth_domain");
+const mockDButils = require("../dataLayer/utils/DButils");
 
-async function login(username, password) {
-  //check if login is post request or get
-  try {
-    let userInfo = await auth_utils.getUserInfo(username);
-    let user_password = userInfo.password;
+const mockExecQuery = (mockFunc) =>
+  mockDButils.execQuery.mockImplementation(mockFunc);
 
-    // check that username exists & the password is correct
+const mockError = async () => {
+  throw new Error("some network issue occured");
+};
 
-    if (!userInfo || password != user_password) {
-      // throw { status: 401, message: "Username or Password incorrect" };
-      return false;
-    }
-    return userInfo.userId;
-  } catch (error) {
-    return false;
-  }
-}
+describe("login", () => {
+  beforeEach(() => jest.resetAllMocks());
+  test("should succeed login and return userId", async () => {
+    const user = { userId: 123, username: "sapir", password: "220812" };
+    mockExecQuery(() => [user]);
+    const result = await auth_domain.login(user.username, user.password);
+    expect(result).toEqual(user.userId);
+  });
 
-async function userRegister(user) {
-  try {
-    let user_info = await auth_utils.getUserInfo(user.username);
+  test("should return an error when password is incorrect", async () => {
+    const user = { userId: 123, username: "sapir", password: "220812" };
+    mockExecQuery(() => [user]);
+    const result = await auth_domain.login(user.username, `${user.password}1`);
+    expect(result).toBe(false);
+  });
 
-    // check if user is in the system already and ask bar if a user name is uniq or not
-    if (Object.size(user_info) == 0) {
-      user = await auth_utils.insertUserInfo(user);
-    } else {
-      throw { message: "User already exist" };
-    }
-    return user;
-  } catch (error) {
-    console.error(error);
-    throw { error: error };
-  }
-}
-async function getUsers() {
-  users = await auth_utils.getUsers();
-  return users;
-}
+  test("should return an error", async () => {
+    mockExecQuery(mockError);
+    await expect(auth_domain.login("1", "2")).rejects.toThrow();
+  });
+});
 
-exports.getUsers = getUsers;
+describe("userRegister", () => {
+  beforeEach(() => jest.resetAllMocks());
+  test("should succeed registering user", async () => {
+    const user = { userId: 123, username: "sapir", password: "220812" };
+    mockExecQuery(() => null);
+    const result = await auth_domain.userRegister(user);
+    expect(result).toEqual(user);
+  });
+  test("should fail registering user if exists", async () => {
+    const user = { userId: 123, username: "sapir", password: "220812" };
+    mockExecQuery(() => [user]);
+    await expect(auth_domain.userRegister(user)).rejects.toThrow();
+  });
 
-exports.login = login;
-exports.userRegister = userRegister;
+  test("should return an error", async () => {
+    mockExecQuery(mockError);
+    await expect(
+      auth_domain.userRegister({ username: "sapir" })
+    ).rejects.toThrow();
+  });
+
+  test("should return an error if user is not in correct form", async () => {
+    mockExecQuery(mockError);
+    await expect(auth_domain.userRegister()).rejects.toThrow();
+  });
+});

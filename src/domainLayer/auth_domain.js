@@ -1,10 +1,7 @@
-var express = require("express");
-var router = express.Router();
-const path = require("path");
 const auth_utils = require("../dataLayer/utils/auth_utils");
-const bcrypt = require("bcryptjs");
-const { nextTick } = require("process");
 
+// TODO change to const!!
+// TODO how do you know why it returns false? there are 2 possible problems
 async function login(username, password) {
   //check if login is post request or get
   try {
@@ -19,24 +16,27 @@ async function login(username, password) {
     }
     return userInfo.userId;
   } catch (error) {
-    return false;
+    console.error("error logging user");
+    throw error;
   }
 }
 
-async function userRegister(user) {
+async function userRegister(userObj) {
   try {
-    let user_info = await auth_utils.getUserInfo(user.username);
+    let user;
+    //TODO: change to const
+    let user_info = await auth_utils.getUserInfo(userObj.username);
 
-    // check if user is in the system already and ask bar if a user name is uniq or not
-    if (Object.size(user_info) == 0) {
-      user = await auth_utils.insertUserInfo(user);
+    // TODO: check if user is in the system already and ask bar if a user name is uniq or not
+    if (!user_info) {
+      user = await auth_utils.insertUserInfo(userObj);
     } else {
       throw { message: "User already exist" };
     }
     return user;
   } catch (error) {
     console.error(error);
-    throw { error: error };
+    throw new Error({ error });
   }
 }
 async function getUsers() {
@@ -45,6 +45,5 @@ async function getUsers() {
 }
 
 exports.getUsers = getUsers;
-
 exports.login = login;
 exports.userRegister = userRegister;
