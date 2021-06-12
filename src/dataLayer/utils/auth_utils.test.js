@@ -180,6 +180,14 @@ describe("getUsers", () => {
     expect(result).toEqual(mockUsers);
   });
 
+  test("should check query", async () => {
+    mockUsers = [];
+    const mockedImp = mockExecQuery(async () => mockUsers);
+    await auth_utils.getUsers();
+    const query = mockedImp.mock.calls[0][0];
+    expect(query).toEqual(`select * from dbo.Users`);
+  });
+
   test("should not find users", async () => {
     const mockUsers = [];
     mockExecQuery(async () => mockUsers);

@@ -60,8 +60,9 @@ async function checkUnionRep(userId) {
     throw error;
   }
 }
+// TODO: add try catch, change to const
 async function getUsers() {
-  const users = await DButils.execQuery(`select * from dbo.Users`);
+  let users = await DButils.execQuery(`select * from dbo.Users`);
 
   return users;
 }
