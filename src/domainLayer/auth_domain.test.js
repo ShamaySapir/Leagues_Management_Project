@@ -57,3 +57,18 @@ describe("userRegister", () => {
     await expect(auth_domain.userRegister()).rejects.toThrow();
   });
 });
+
+describe("getUsers", () => {
+  beforeEach(() => jest.resetAllMocks());
+  test("should get all db users", async () => {
+    const user = { userId: 123, username: "sapir", password: "220812" };
+    mockExecQuery(() => [user, user]);
+    const result = await auth_domain.getUsers(user);
+    expect(result).toEqual([user, user]);
+  });
+
+  test("should return an error when exception raised", async () => {
+    mockExecQuery(mockError);
+    await expect(auth_domain.getUsers()).rejects.toThrow();
+  });
+});
