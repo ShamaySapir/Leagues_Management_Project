@@ -31,12 +31,13 @@ async function userRegister(userObj) {
     if (!user_info) {
       user = await auth_utils.insertUserInfo(userObj);
     } else {
-      throw { message: "User already exist" };
+      console.error("User already exist");
+      throw error;
     }
     return user;
   } catch (error) {
     console.error(error);
-    throw new Error({ error });
+    throw error;
   }
 }
 async function getUsers() {

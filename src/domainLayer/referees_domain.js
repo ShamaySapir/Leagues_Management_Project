@@ -37,7 +37,7 @@ async function CreateReferee(req) {
     user = await auth_domain.userRegister(user);
   } catch (error) {
     console.error(error);
-    throw { error: error };
+    throw error;
   }
 
   try {
@@ -49,7 +49,8 @@ async function CreateReferee(req) {
       return assigned;
     }
   } catch (error) {
-    throw { error };
+    console.error(error);
+    throw error;
   }
 }
 
@@ -57,7 +58,8 @@ async function insertToRefreeTable(user) {
   const userId = await auth_utils.getUserId(user);
   let referee_exist = await referee_utils.getRefereeID(user.username);
   if (referee_exist !== -1) {
-    throw { error: "Referee already exist" };
+    console.error("Referee already exist");
+    throw error;
   }
   let referee_added = await referee_utils.insertRefereeInfo(
     userId,
@@ -68,15 +70,18 @@ async function insertToRefreeTable(user) {
 
 async function assignRefereeToMatch(refereeId, matchId) {
   if (matchId == null) {
-    throw { error: "matchId required" };
+    console.error("matchId required");
+    throw error;
   }
 
   let matches = await matches_utils.getMatches();
 
   const isMatchPresent = matches.find((match) => match.matchId === matchId);
   if (!isMatchPresent) {
-    throw { error: "match doesnt exist" };
+    console.error("match not found");
+    throw error;
   }
+
   matches_utils.UpdateRefereeToMatch(matchId, refereeId);
   return true;
 }

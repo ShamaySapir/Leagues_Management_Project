@@ -56,7 +56,8 @@ async function scheduleByFirstPolicy(leagueId, seasonId) {
 
   let wrote_to_DB = await writeToDB(matches, "matches");
   if (!wrote_to_DB) {
-    throw { message: "failed to write matches to DB" };
+    console.error("failed to write matches to DB");
+    throw error;
   }
 
   return matches;
@@ -159,7 +160,8 @@ async function scheduleBySecondPolicy(leagueId, seasonId) {
   //add matches to DB
   let wrote_to_DB = await writeToDB(allMatches, "matches");
   if (!wrote_to_DB) {
-    throw { message: "failed to write matches to DB" };
+    console.error("failed to write matches to DB");
+    throw error;
   }
   return allMatches;
 }

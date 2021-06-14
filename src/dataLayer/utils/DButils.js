@@ -20,9 +20,9 @@ async function execQuery(query) {
   try {
     const result = await pool.request().query(query);
     return result.recordset;
-  } catch (err) {
-    console.error("SQL error", err);
-    throw err;
+  } catch (error) {
+    console.error("SQL error", error);
+    throw error;
   }
 }
 
